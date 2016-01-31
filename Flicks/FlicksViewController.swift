@@ -10,8 +10,9 @@ import UIKit
 import AFNetworking
 import MBProgressHUD
 
-class FlicksViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-    @IBOutlet weak var tableView: UITableView!
+class FlicksViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UICollectionViewDataSource {
+    //@IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var collectionView: UICollectionView!
     
     var movies: [NSDictionary]?
 
@@ -21,12 +22,14 @@ class FlicksViewController: UIViewController, UITableViewDataSource, UITableView
         
         // Do any additional setup after loading the view.
 
-        tableView.dataSource = self
-        tableView.delegate = self
+//        tableView.dataSource = self
+//        tableView.delegate = self
+        collectionView.dataSource = self
         
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: "refreshControlAction:", forControlEvents: UIControlEvents.ValueChanged)
-        tableView.insertSubview(refreshControl, atIndex: 0)
+        //tableView.insertSubview(refreshControl, atIndex: 0)
+        collectionView.insertSubview(refreshControl, atIndex: 0)
         
         let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
         let url = NSURL(string: "https://api.themoviedb.org/3/movie/now_playing?api_key=\(apiKey)")
@@ -57,7 +60,8 @@ class FlicksViewController: UIViewController, UITableViewDataSource, UITableView
                             print("response: \(responseDictionary)")
                             
                             self.movies = responseDictionary["results"] as? [NSDictionary]
-                            self.tableView.reloadData()
+                            //self.tableView.reloadData()
+                            self.collectionView.reloadData()
                             
                     }
                 }
@@ -78,6 +82,8 @@ class FlicksViewController: UIViewController, UITableViewDataSource, UITableView
         {
             return 0
         }
+        print(movies?.count)
+        
         return (movies?.count)!
     }
     
@@ -118,6 +124,42 @@ class FlicksViewController: UIViewController, UITableViewDataSource, UITableView
         return cell
     }
     
+    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
+    {
+        if (movies == nil)
+        {
+            return 0
+        }
+        print(movies?.count)
+        
+        return (movies?.count)!
+    }
+    
+    // The cell that is returned must be retrieved from a call to -dequeueReusableCellWithReuseIdentifier:forIndexPath:
+    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell
+    {
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("posterView", forIndexPath: indexPath) as! PosterCell
+        
+        let movie = movies![indexPath.row]
+        
+        if let posterPath = movie["poster_path"] as? String
+        {
+            let baseUrl = "http://image.tmdb.org/t/p/w500"
+            
+            let imageUrl = NSURL(string: baseUrl + posterPath)
+            
+            cell.posterView.setImageWithURL(imageUrl!)
+        }
+        else
+        {
+            cell.posterView.image = nil
+        }
+
+        
+        return cell
+    }
+
+    
     // Makes a network request to get updated data
     // Updates the tableView with the new data
     // Hides the RefreshControl
@@ -150,14 +192,15 @@ class FlicksViewController: UIViewController, UITableViewDataSource, UITableView
                         print("response: \(responseDictionary)")
                         
                         self.movies = responseDictionary["results"] as? [NSDictionary]
-                        self.tableView.reloadData()
-                        
+                        //self.tableView.reloadData()
+                        self.collectionView.reloadData()
                 }
             }
 
             
                 // Reload the tableView now that there is new data
-                self.tableView.reloadData()
+                //self.tableView.reloadData()
+                self.collectionView.reloadData()
                 
                 // Tell the refreshControl to stop spinning
                 refreshControl.endRefreshing()	
