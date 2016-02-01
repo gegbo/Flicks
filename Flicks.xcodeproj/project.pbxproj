@@ -15,6 +15,7 @@
 		EA7D55361C55DAAD009B6898 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EA7D55341C55DAAD009B6898 /* LaunchScreen.storyboard */; };
 		EACF79E31C569184002B0768 /* FlicksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACF79E21C569184002B0768 /* FlicksViewController.swift */; };
 		EAF07CF61C56F1D200ABDBAC /* MovieCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF07CF51C56F1D200ABDBAC /* MovieCell.swift */; };
+		EAF63DE31C5F0DBA00D6E81C /* iconmonstr-error-4-240.png in Resources */ = {isa = PBXBuildFile; fileRef = EAF63DE21C5F0DBA00D6E81C /* iconmonstr-error-4-240.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		EA7D55371C55DAAD009B6898 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EACF79E21C569184002B0768 /* FlicksViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlicksViewController.swift; sourceTree = "<group>"; };
 		EAF07CF51C56F1D200ABDBAC /* MovieCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovieCell.swift; sourceTree = "<group>"; };
+		EAF63DE21C5F0DBA00D6E81C /* iconmonstr-error-4-240.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iconmonstr-error-4-240.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +84,7 @@
 		EA7D552A1C55DAAD009B6898 /* Flicks */ = {
 			isa = PBXGroup;
 			children = (
+				EAF63DE41C5F112300D6E81C /* Images */,
 				EAF07CF71C56F1ED00ABDBAC /* View Controllers */,
 				EAF07CF41C56F14400ABDBAC /* Views */,
 				EA7D552B1C55DAAD009B6898 /* AppDelegate.swift */,
@@ -108,6 +111,14 @@
 				EACF79E21C569184002B0768 /* FlicksViewController.swift */,
 			);
 			name = "View Controllers";
+			sourceTree = "<group>";
+		};
+		EAF63DE41C5F112300D6E81C /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				EAF63DE21C5F0DBA00D6E81C /* iconmonstr-error-4-240.png */,
+			);
+			name = Images;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -171,6 +182,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EAF63DE31C5F0DBA00D6E81C /* iconmonstr-error-4-240.png in Resources */,
 				EA7D55361C55DAAD009B6898 /* LaunchScreen.storyboard in Resources */,
 				EA7D55331C55DAAD009B6898 /* Assets.xcassets in Resources */,
 				EA7D55311C55DAAD009B6898 /* Main.storyboard in Resources */,
