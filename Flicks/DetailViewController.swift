@@ -13,6 +13,10 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var posterImageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var overviewLabel: UILabel!
+    @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var infoView: UIView!
+    @IBOutlet weak var rating: UILabel!
+    @IBOutlet weak var ratingLabel: UILabel!
     
     var movie: NSDictionary! 
     
@@ -23,11 +27,23 @@ class DetailViewController: UIViewController {
 
         // Do any additional setup after loading the view.
         
+        navigationItem.title = "Movie Detail"
+        navigationItem.leftBarButtonItem?.title = "Movie List"
+        
+        scrollView.contentSize = CGSize(width: scrollView.frame.width, height: infoView.frame.origin.y + infoView.frame.size.height)
+        
         let title = movie["title"] as? String
         titleLabel.text = title
         
         let overview = movie["overview"] as? String
         overviewLabel.text = overview
+        overviewLabel.sizeToFit()
+        
+        let rating = ((movie["vote_average"] as! Double)*10)
+        
+        
+        ratingLabel.text = String(format: "%.0f", rating)+"%"
+        
         
         let baseUrl = "http://image.tmdb.org/t/p/w500"
         if let posterPath = movie["poster_path"] as? String

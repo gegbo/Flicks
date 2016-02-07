@@ -17,6 +17,7 @@
 		EAD884F61C5FD30E00957595 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD884F51C5FD30E00957595 /* DetailViewController.swift */; };
 		EAF07CF61C56F1D200ABDBAC /* MovieCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF07CF51C56F1D200ABDBAC /* MovieCell.swift */; };
 		EAF63DE31C5F0DBA00D6E81C /* iconmonstr-error-4-240.png in Resources */ = {isa = PBXBuildFile; fileRef = EAF63DE21C5F0DBA00D6E81C /* iconmonstr-error-4-240.png */; };
+		EAFB6FFB1C66B83400EA9ED8 /* Popularity.png in Resources */ = {isa = PBXBuildFile; fileRef = EAFB6FFA1C66B83400EA9ED8 /* Popularity.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		EAD884F51C5FD30E00957595 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		EAF07CF51C56F1D200ABDBAC /* MovieCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovieCell.swift; sourceTree = "<group>"; };
 		EAF63DE21C5F0DBA00D6E81C /* iconmonstr-error-4-240.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iconmonstr-error-4-240.png"; sourceTree = "<group>"; };
+		EAFB6FFA1C66B83400EA9ED8 /* Popularity.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Popularity.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,6 +121,7 @@
 		EAF63DE41C5F112300D6E81C /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				EAFB6FFA1C66B83400EA9ED8 /* Popularity.png */,
 				EAF63DE21C5F0DBA00D6E81C /* iconmonstr-error-4-240.png */,
 			);
 			name = Images;
@@ -187,6 +190,7 @@
 			files = (
 				EAF63DE31C5F0DBA00D6E81C /* iconmonstr-error-4-240.png in Resources */,
 				EA7D55361C55DAAD009B6898 /* LaunchScreen.storyboard in Resources */,
+				EAFB6FFB1C66B83400EA9ED8 /* Popularity.png in Resources */,
 				EA7D55331C55DAAD009B6898 /* Assets.xcassets in Resources */,
 				EA7D55311C55DAAD009B6898 /* Main.storyboard in Resources */,
 			);

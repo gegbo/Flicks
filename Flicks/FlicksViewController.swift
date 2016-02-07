@@ -10,7 +10,7 @@ import UIKit
 import AFNetworking
 import MBProgressHUD
 
-class FlicksViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UICollectionViewDataSource,UISearchBarDelegate{
+class FlicksViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UICollectionViewDataSource,UICollectionViewDelegate,UISearchBarDelegate{
     
     //@IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var collectionView: UICollectionView!
@@ -20,6 +20,7 @@ class FlicksViewController: UIViewController, UITableViewDataSource, UITableView
     var hidden = true
     var movies: [NSDictionary]?
     var filteredData: [NSDictionary]!
+    var endpoint: String!
     
 
     override func viewDidLoad()
@@ -27,6 +28,20 @@ class FlicksViewController: UIViewController, UITableViewDataSource, UITableView
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
+        
+        if let navigationBar = navigationController?.navigationBar {
+            navigationBar.tintColor = UIColor(red: 1.0, green: 0.25, blue: 0.25, alpha: 0.8)
+            
+            let shadow = NSShadow()
+            shadow.shadowColor = UIColor.grayColor().colorWithAlphaComponent(1.0)
+            shadow.shadowOffset = CGSizeMake(2, 2);
+            shadow.shadowBlurRadius = 4;
+            navigationBar.titleTextAttributes = [
+                NSFontAttributeName : UIFont.boldSystemFontOfSize(22),
+                NSForegroundColorAttributeName : UIColor(red: 0.859, green: 0.894, blue: 0.984, alpha: 1.0),
+                NSShadowAttributeName : shadow
+            ]
+        }
 
 //        tableView.dataSource = self
 //        tableView.delegate = self
@@ -39,7 +54,7 @@ class FlicksViewController: UIViewController, UITableViewDataSource, UITableView
         collectionView.insertSubview(refreshControl, atIndex: 0)
         
         let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
-        let url = NSURL(string: "https://api.themoviedb.org/3/movie/now_playing?api_key=\(apiKey)")
+        let url = NSURL(string: "https://api.themoviedb.org/3/movie/\(endpoint)?api_key=\(apiKey)")
         let request = NSURLRequest(
             URL: url!,
             cachePolicy: NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData,
@@ -63,7 +78,7 @@ class FlicksViewController: UIViewController, UITableViewDataSource, UITableView
                 {
                     if let responseDictionary = try! NSJSONSerialization.JSONObjectWithData(
                         data, options:[]) as? NSDictionary {
-                            //print("response: \(responseDictionary)")
+                            print("response: \(responseDictionary)")
                             
                             self.movies = responseDictionary["results"] as? [NSDictionary]
                             //self.tableView.reloadData()
@@ -83,6 +98,7 @@ class FlicksViewController: UIViewController, UITableViewDataSource, UITableView
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
@@ -157,6 +173,7 @@ class FlicksViewController: UIViewController, UITableViewDataSource, UITableView
         return filteredData.count
     }
     
+    
     // The cell that is returned must be retrieved from a call to -dequeueReusableCellWithReuseIdentifier:forIndexPath:
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell
     {
@@ -164,51 +181,75 @@ class FlicksViewController: UIViewController, UITableViewDataSource, UITableView
         
         //let movie = movies![indexPath.row]
         let movie = filteredData![indexPath.row]
-//        if let posterPath = movie["poster_path"] as? String
-//        {
-//            let baseUrl = "http://image.tmdb.org/t/p/w500"
-//            
-//            let imageUrl = NSURL(string: baseUrl + posterPath)
-//            
-//            cell.posterView.setImageWithURL(imageUrl!)
-//        }
-//        else
-//        {
-//            cell.posterView.image = nil
-//        }
 
-        let baseUrl = "http://image.tmdb.org/t/p/w500"
+        let backgroundView = UIView()
+        backgroundView.backgroundColor = UIColor(red: 0.859, green: 0.894, blue: 0.984, alpha: 1.0)
+        cell.selectedBackgroundView = backgroundView
+        
+        let lowResBaseUrl = "http://image.tmdb.org/t/p/w45"
+        let highResBaseUrl = "http://image.tmdb.org/t/p/original"
         let posterPath = movie["poster_path"] as! String
         
-        let posterUrl = baseUrl + posterPath
-        let imageRequest = NSURLRequest(URL: NSURL(string: posterUrl)!)
+        let lowPosterUrl = lowResBaseUrl + posterPath
+        let lowImageRequest = NSURLRequest(URL: NSURL(string: lowPosterUrl)!)
         
+        let highPosterUrl = highResBaseUrl + posterPath
+        let highImageRequest = NSURLRequest(URL: NSURL(string: highPosterUrl)!)
+    
         cell.posterView.setImageWithURLRequest(
-            imageRequest,
+            lowImageRequest,
             placeholderImage: nil,
-            success: { (imageRequest, imageResponse, image) -> Void in
+            success: { (smallImageRequest, smallImageResponse, smallImage) -> Void in
                 
-                // imageResponse will be nil if the image is cached
-                if imageResponse != nil {
-                    print("Image was NOT cached, fade in image")
+                // smallImageResponse will be nil if the smallImage is already available
+                // in cache (might want to do something smarter in that case).
+                if smallImageResponse !=  nil
+                {
                     cell.posterView.alpha = 0.0
-                    cell.posterView.image = image
+                    cell.posterView.image = smallImage;
+                    
                     UIView.animateWithDuration(0.3, animations: { () -> Void in
+                        
                         cell.posterView.alpha = 1.0
+                        
+                        }, completion: { (sucess) -> Void in
+                            
+                            // The AFNetworking ImageView Category only allows one request to be sent at a time
+                            // per ImageView. This code must be in the completion block.
+                            cell.posterView.setImageWithURLRequest(
+                                highImageRequest,
+                                placeholderImage: smallImage,
+                                success: { (largeImageRequest, largeImageResponse, largeImage) -> Void in
+                                    
+                                    cell.posterView.image = largeImage;
+                                    
+                                },
+                                failure: { (request, response, error) -> Void in
+                                    // do something for the failure condition of the large image request
+                                    // possibly setting the ImageView's image to a default image
+                                    cell.posterView.image = smallImage
+                            })
                     })
-                } else {
-                    print("Image was cached so just update the image")
-                    cell.posterView.image = image
+
+                }
+                else
+                {
+                    cell.posterView.setImageWithURL(NSURL(string: highPosterUrl)!)
                 }
             },
-            failure: { (imageRequest, imageResponse, error) -> Void in
+            failure: { (request, response, error) -> Void in
                 // do something for the failure condition
+                // possibly try to get the large image
                 cell.posterView.image = nil
         })
         
         return cell
      }
+    
 
+    func collectionView(collectionView: UICollectionView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        collectionView.deselectItemAtIndexPath(indexPath, animated: true)
+    }
     
     // Makes a network request to get updated data
     // Updates the tableView with the new data
@@ -218,7 +259,7 @@ class FlicksViewController: UIViewController, UITableViewDataSource, UITableView
         
         // ... Create the NSURLRequest (myRequest) ...
         let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
-        let url = NSURL(string: "https://api.themoviedb.org/3/movie/now_playing?api_key=\(apiKey)")
+        let url = NSURL(string: "https://api.themoviedb.org/3/movie/\(endpoint)?api_key=\(apiKey)")
         let myRequest = NSURLRequest(
             URL: url!,
             cachePolicy: NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData,
@@ -247,7 +288,7 @@ class FlicksViewController: UIViewController, UITableViewDataSource, UITableView
             {
                 if let responseDictionary = try! NSJSONSerialization.JSONObjectWithData(
                     data, options:[]) as? NSDictionary {
-                        print("response: \(responseDictionary)")
+                        //print("response: \(responseDictionary)")
                         
                         self.movies = responseDictionary["results"] as? [NSDictionary]
                         //self.tableView.reloadData()
@@ -314,6 +355,8 @@ class FlicksViewController: UIViewController, UITableViewDataSource, UITableView
         // Pass the selected object to the new view controller.
         
         let cell = sender as! UICollectionViewCell
+        
+        
         let indexPath = collectionView.indexPathForCell(cell)
         let movie = filteredData[indexPath!.row]
         
@@ -323,6 +366,5 @@ class FlicksViewController: UIViewController, UITableViewDataSource, UITableView
         
         
     }
-    
 
 }
